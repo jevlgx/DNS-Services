@@ -15,7 +15,6 @@
 
 .App-header {
   background-color: #282c34;
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -46,7 +45,6 @@
   --borderColor: #d1d1d1;
 }
 body {
-  height: 100vh;
   width: 100vw;
   background-color: #eaecfd;
 }
@@ -97,16 +95,14 @@ body {
 .divButton {
   width: 100%;
   display: flex;
-  justify-content: end;
+  justify-content: flex-end;
 }
 
 /*ADDED*/
 
 .mainContainer {
 	width: 100vw;
-	height: 100vh;
 	overflow: hidden;
-	background-color: #4B50CE;
 	display: grid;
 	grid-template-columns: 1.9fr 1fr;
 	gap: 15px;
@@ -171,6 +167,7 @@ body {
 		margin-bottom: 30px;
 		color: #fff;
 	}
+	#labelServerName{margin-right: 15px;}
 	.isNotAServer {
 		padding: 20px;
 		border-radius: 10px;
@@ -180,7 +177,6 @@ body {
 				color: #f3f3f3;
 			}
 			input{
-				margin-left: 10px;
 				height: 30px;
 				width: 200px;
 				padding: 3px;
@@ -221,4 +217,34 @@ summary::-webkit-details-marker {
 }
 summary::marker {
 	display: none;
+}
+
+@media screen and (max-width: 660px) {
+	.mainContainer{
+		grid-template-columns: 1fr;
+	}
+	.left{
+		border-radius: 0%;
+	}
+	.left, .right{
+		padding: 15px;
+	}
+}
+#adminHeader{
+	display: grid;
+	grid-template-columns: 1fr 2fr 1fr;
+	background-color: #fff;
+	div{
+		width: 50px;
+		height: 50px;
+		background-color: red;
+	}
+	h2{
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+	button{
+		justify-self: end;
+	}
 }
