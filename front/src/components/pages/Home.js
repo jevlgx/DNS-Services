@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 export default function Home() {
 
 	const serverURL = "http://localhost:8080"
-	const [hasServer, setHasServer] = useState(true) //passer à false pour la production
+	const [hasServer, setHasServer] = useState(false) //passer à false pour la production
 	const [server, setServer] = useState({
 		name: "server1",
 		description: "description server1"
