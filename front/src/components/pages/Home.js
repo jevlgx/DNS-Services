@@ -139,7 +139,7 @@ export default function Home() {
 
 		axios.get(serverURL+"/isAdmin")
 		.then(response =>{
-				if(response == "yes"){
+				if(response === "yes"){
 					//C'EST L'ADMIN
 					setIsAdmin(true)
 
@@ -321,7 +321,7 @@ export default function Home() {
 							<span>Nom : {adminWifi.name}</span>
 							<span>Etat
 								{function(){
-									if(adminWifi.status == "up") return <span class="ms-2 badge text-bg-success rounded-pill">working</span>
+									if(adminWifi.status === "up") return <span class="ms-2 badge text-bg-success rounded-pill">working</span>
 									return <span class="ms-2 badge text-bg-danger rounded-pill">Down</span>
 								}()
 								}
@@ -338,7 +338,7 @@ export default function Home() {
 						</div>
 						<div className="d-flex gap-3 justify-content-evenly mt-4">
 							{function(){
-								if(adminWifi.status == "up") return <button onClick={()=> togleWifiStatus("down")} type="button" className="btn btn-danger w-100">Eteindre</button>
+								if(adminWifi.status === "up") return <button onClick={()=> togleWifiStatus("down")} type="button" className="btn btn-danger w-100">Eteindre</button>
 								return <button onClick={()=> togleWifiStatus("up")} type="button" className="btn btn-primary w-100">Alumer</button>
 							}()
 
@@ -455,8 +455,8 @@ export default function Home() {
 								className="mt-4"
 								onSubmit={(e) => {
 								e.preventDefault()
-								const serverName = e.target.elements.server.value
-								const description = e.target.elements.description.value
+								const serverName = e.target.elements[0].value
+								const description = e.target.elements[1].value
 								handleCreateServer(serverName, description)
 								}}
 							>
