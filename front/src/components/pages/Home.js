@@ -411,7 +411,8 @@ export default function Home() {
 											<td>{server.name}</td>
 											<td>{server.ip}</td>
 											<td>{server.description}</td>
-											<td><button onClick={event => deleteAdress(event,`${server.id}`)} type="button" class="btn btn-outline-danger">Supprimer</button></td>
+											<td><button type="button" class="btn btn-outline-primary">Se connecter</button></td>
+											{/* TODO: ajout de la fonctionnalité de connection au serveur sélectionné */}
 										</tr>
 									)
 								})}
