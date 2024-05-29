@@ -1,4 +1,89 @@
+/* ENDS POINTS
 
+	/getServers : retourne un tableau des serveurs enregistrés comme
+		[
+			{id: "1",server: "stockageFichiers",ip: "192.168.1.100",description: "Serveur de stockage et de partage de fichiers"},
+			{id: "2",server: "stockageFichiers",ip: "192.168.1.100",description: "Serveur de stockage et de partage de fichiers"},
+		]
+	/isAdmin: retourne "yes" si l'utilisateur est l'admin et "no" sinon
+	/getAdminWifi: retourne {name: "nom du wifi wréé",password: "*********",status: "up || down"}
+	/getServersRequests: retourne un tableau des wifis en attente de validation de création
+		[
+			{id: "1",server: "stockageFichiers",ip: "192.168.1.100",description: "Serveur de stockage et de partage de fichiers"},
+			{id: "2",server: "stockagechiers",ip: "192.168.1.100",description: "Serveur de stockage et de partage de fichiers"},
+		]
+	/hasServer: Il renvoie
+		{
+			hasServer: "yes",
+			name: "nom du serveur"
+			description: "description du serveur"
+		}
+		si l'utilisateur a un serveur actif sur le wifi
+		et
+		{
+			hasServer: "no",
+			name: ""
+			description: ""
+		}
+		dans le cas contraire
+	/"createServer?name="+serverName+"&description="+description: end-point de création d'un serveur
+		{
+			status: "ok",
+			errorMessage: ""
+		}
+		OU
+		{
+			status: "error",
+			errorMessage: "message d'erreur"
+		}
+	"/setServer?name="+server.name+"&description="+newDescription : end-point de modification de la description d'un serveur
+		{
+			status: "ok",
+			errorMessage: ""
+		}
+		OU
+		{
+			status: "error",
+			errorMessage: "message d'erreur"
+		}
+	"/setWifiPassword?password="+password : modifier le mot de passe du wifi qui a été créé
+		{
+			status: "ok",
+			errorMessage: ""
+		}
+		OU
+		{
+			status: "error",
+			errorMessage: "message d'erreur"
+		}
+	"/togleWifiStatus?status="+status : permet d'allumer ou d'éteindre le wifi et donc le service de DNS
+		renvoie "up" si l'action a activé le wifi et "down" si l'action l'a désactivé
+	"/attribuerAdresse?id="+id : accepte la demande d'attribution d'adresse du serveur d'iD id et retourne un tableau des serveurs actifs comme
+		[
+			{id: "1",server: "stockageFichiers",ip: "192.168.1.100",description: "Serveur de stockage et de partage de fichiers"},
+			{id: "2",server: "stockageFichiers",ip: "192.168.1.100",description: "Serveur de stockage et de partage de fichiers"},
+		]
+	"/deleteAdress?idAdress="+idAdress : Supprime un serveur à partir de son id
+		{
+			status: "ok",
+			errorMessage: ""
+		}
+		OU
+		{
+			status: "error",
+			errorMessage: "message d'erreur"
+		}
+	/deleteMyServer : supprime le serveur actif d'un utilisateur
+		{
+			status: "ok",
+			errorMessage: ""
+		}
+		OU
+		{
+			status: "error",
+			errorMessage: "message d'erreur"
+		}
+*/
 import axios from "axios"
 import { useEffect, useState } from "react"
 export default function Home() {
@@ -19,27 +104,27 @@ export default function Home() {
 		}
 	)
 	const [onlineServers, setOnlineServers] = useState([
-		{id: "1",server: "stockageFichiers",ip: "192.168.1.100",description: "Serveur de stockage et de partage de fichiers"},
-		{id: "26",server: "serveurWeb",ip: "203.0.113.50",description: "Serveur hébergeant le site web de l'entreprise"},
-		{id: "3",server: "serveurBase",ip: "10.0.0.75",description: "Serveur exécutant la base de données de l'entreprise"},
-		{id: "43",server: "serveurEmail",ip: "172.16.0.40",description: "Serveur gérant les e-mails de l'entreprise"},
-		{id: "52",server: "serveurSauvegarde",ip: "192.168.2.60",description: "Serveur responsable des sauvegardes de données"},
-		{id: "61",server: "serveurProxy",ip: "209.85.229.200",description: "Serveur faisant office de proxy pour l'accès à Internet"},
-		{id: "77",server: "serveurTransfertFichiers",ip: "10.10.10.20",description: "Serveur utilisé pour les transferts de fichiers sécurisés"},
-		{id: "8",server: "serveurAnalyse",ip: "172.20.0.80",description: "Serveur pour l'analyse de données et la création de rapports"},
-		{id: "9",server: "serveurSurveillance",ip: "192.168.3.90",description: "Serveur responsable de la surveillance du système"}
+		{id: "1",name: "stockageFichiers",ip: "192.168.1.100",description: "Serveur de stockage et de partage de fichiers"},
+		{id: "26",name: "serveurWeb",ip: "203.0.113.50",description: "Serveur hébergeant le site web de l'entreprise"},
+		{id: "3",name: "serveurBase",ip: "10.0.0.75",description: "Serveur exécutant la base de données de l'entreprise"},
+		{id: "43",name: "serveurEmail",ip: "172.16.0.40",description: "Serveur gérant les e-mails de l'entreprise"},
+		{id: "52",name: "serveurSauvegarde",ip: "192.168.2.60",description: "Serveur responsable des sauvegardes de données"},
+		{id: "61",name: "serveurProxy",ip: "209.85.229.200",description: "Serveur faisant office de proxy pour l'accès à Internet"},
+		{id: "77",name: "serveurTransfertFichiers",ip: "10.10.10.20",description: "Serveur utilisé pour les transferts de fichiers sécurisés"},
+		{id: "8",name: "serveurAnalyse",ip: "172.20.0.80",description: "Serveur pour l'analyse de données et la création de rapports"},
+		{id: "9",name: "serveurSurveillance",ip: "192.168.3.90",description: "Serveur responsable de la surveillance du système"}
 	])
 
 	const [serverDemands, setDemandServers] = useState([
-		{id: "11",server: "stockageFichiers",ip: "192.168.1.100",description: "Serveur de stockage et de partage de fichiers"},
-		{id: "12",server: "serveurWeb",ip: "203.0.113.50",description: "Serveur hébergeant le site web de l'entreprise"},
-		{id: "13",server: "serveurBase",ip: "10.0.0.75",description: "Serveur exécutant la base de données de l'entreprise"},
-		{id: "14",server: "serveurEmail",ip: "172.16.0.40",description: "Serveur gérant les e-mails de l'entreprise"},
-		{id: "15",server: "serveurSauvegarde",ip: "192.168.2.60",description: "Serveur responsable des sauvegardes de données"},
-		{id: "16",server: "serveurProxy",ip: "209.85.229.200",description: "Serveur faisant office de proxy pour l'accès à Internet"},
-		{id: "17",server: "serveurTransfertFichiers",ip: "10.10.10.20",description: "Serveur utilisé pour les transferts de fichiers sécurisés"},
-		{id: "18",server: "serveurAnalyse",ip: "172.20.0.80",description: "Serveur pour l'analyse de données et la création de rapports"},
-		{id: "19",server: "serveurSurveillance",ip: "192.168.3.90",description: "Serveur responsable de la surveillance du système"}
+		{id: "11",name: "stockageFichiers",ip: "192.168.1.100",description: "Serveur de stockage et de partage de fichiers"},
+		{id: "12",name: "serveurWeb",ip: "203.0.113.50",description: "Serveur hébergeant le site web de l'entreprise"},
+		{id: "13",name: "serveurBase",ip: "10.0.0.75",description: "Serveur exécutant la base de données de l'entreprise"},
+		{id: "14",name: "serveurEmail",ip: "172.16.0.40",description: "Serveur gérant les e-mails de l'entreprise"},
+		{id: "15",name: "serveurSauvegarde",ip: "192.168.2.60",description: "Serveur responsable des sauvegardes de données"},
+		{id: "16",name: "serveurProxy",ip: "209.85.229.200",description: "Serveur faisant office de proxy pour l'accès à Internet"},
+		{id: "17",name: "serveurTransfertFichiers",ip: "10.10.10.20",description: "Serveur utilisé pour les transferts de fichiers sécurisés"},
+		{id: "18",name: "serveurAnalyse",ip: "172.20.0.80",description: "Serveur pour l'analyse de données et la création de rapports"},
+		{id: "19",name: "serveurSurveillance",ip: "192.168.3.90",description: "Serveur responsable de la surveillance du système"}
 	])
 
 
@@ -57,6 +142,7 @@ export default function Home() {
 				if(response == "yes"){
 					//C'EST L'ADMIN
 					setIsAdmin(true)
+
 					axios.get(serverURL+"/getAdminWifi")
 					.then( response =>{
 							setAdminWifi(response)
@@ -91,15 +177,16 @@ export default function Home() {
 
 	})
 
-	const handleCreateServer= (server, description)=>{
-		axios.get(serverURL+"/createServer?name="+server+"&description="+description)
+	const handleCreateServer= (serverName, description)=>{
+		axios.get(serverURL+"/createServer?name="+serverName+"&description="+description)
 		.then(response =>{
 			if(response.status === "ok"){
 				setHasServer(true)
 				setServer({
-					name: server,
+					name: serverName,
 					description: description
 				})
+				setError("")
 			}else{
 				// en cas d'erreur response.status == "error", response.errorMessage= "message d'erreur"
 				setError(response.errorMessage)
@@ -118,6 +205,8 @@ export default function Home() {
 					name: server.name,
 					description: newDescription
 				})
+				setError("")
+				//TODO: notifier l'utilisateur de cette modification
 			}else{
 				setError(response.errorMessage)
 			}
@@ -129,7 +218,12 @@ export default function Home() {
 		let password = event.target.parentNode.children[1].value
 		axios.get(serverURL+"/setWifiPassword?password="+password)
 		.then(response =>{
-			//TODO: notifier l'utilisateur que la modification est un succès
+			if(response.status === "ok"){
+				//TODO: notifier l'administrateur du succes de la modification
+				setError("")
+			}else{
+				setError(response.errorMessage)
+			}
 		})
 		.catch(error => console.error(error))
 	}
@@ -149,6 +243,7 @@ export default function Home() {
 			let demand = event.target.parentNode.parentNode
 			demand.style.display = "none"
 			setOnlineServers(response.servers)
+			//TODO: Informer l'administrateur que l'opération a réussi
 		})
 		.catch(error => console.error(error))
 	}
@@ -156,8 +251,13 @@ export default function Home() {
 	const deleteAdress= (event, idAdress)=>{
 		axios.get(serverURL+"/deleteAdress?idAdress="+idAdress)
 		.then(response =>{
-			let server = event.target.parentNode.parentNode
-			server.style.display = "none"
+			if(response.status === "ok"){
+				let server = event.target.parentNode.parentNode
+				server.style.display = "none"
+				//TODO: Informer l'administrateur que l'opération a réussi
+			}else{
+				//TODO: informer l'administrateur de la survenue de cette erreur
+			}
 		})
 		.catch(error => console.error(error))
 	}
@@ -165,7 +265,12 @@ export default function Home() {
 	const deleteMyServer= ()=>{
 		axios.get(serverURL+"/deleteMyServer")
 		.then(response =>{
-			setHasServer(false)
+			if(response.status === "ok"){
+				setHasServer(false)
+				//TODO: Informer l'utilisateur que l'opération a réussi
+			}else{
+				//TODO: informer l'utilisateur de la survenue de cette erreur
+			}
 		})
 		.catch(error => console.error(error))
 	}
@@ -198,7 +303,7 @@ export default function Home() {
 									return(
 										<tr>
 											<th scope="row">{server.id}</th>
-											<td>{server.server}</td>
+											<td>{server.name}</td>
 											<td>{server.ip}</td>
 											<td>{server.description}</td>
 											<td><button onClick={event => deleteAdress(event,`${server.id}`)} type="button" class="btn btn-outline-danger">Supprimer</button></td>
@@ -224,6 +329,9 @@ export default function Home() {
 							
 						</div>
 						<div className="d-flex justify-content-between align-items-center mt-4">
+							{error &&
+								<span>{error}</span>
+							}
 							<span>Mot de passe : </span>
 							<input type="text" className="p-1" placeholder={adminWifi.password} />
 							<button onClick={(event)=> handleChangePassword(event)} className="btn btn-primary">Modifier</button>
@@ -256,7 +364,7 @@ export default function Home() {
 									return(
 										<tr>
 											<th scope="row">{demand.id}</th>
-											<td>{demand.server}</td>
+											<td>{demand.name}</td>
 											<td>{demand.ip}</td>
 											<td>{demand.description}</td>
 											<td><button type="button" class="btn btn-outline-primary" onClick={(event)=> attribuerAdresse(event,`${demand.id}`)}>Attribuer</button></td>
@@ -300,7 +408,7 @@ export default function Home() {
 									return(
 										<tr>
 											<th scope="row">{server.id}</th>
-											<td>{server.server}</td>
+											<td>{server.name}</td>
 											<td>{server.ip}</td>
 											<td>{server.description}</td>
 											<td><button onClick={event => deleteAdress(event,`${server.id}`)} type="button" class="btn btn-outline-danger">Supprimer</button></td>
@@ -339,9 +447,6 @@ export default function Home() {
 					{!hasServer &&
 						<div className="bg-primary-subtle p-4">
 							<h2><u>Créer un serveur</u></h2>
-							{/* <div className="d-flex justify-content-between">
-								<span>Nom : {server.name}</span>
-							</div> */}
 							<div className="d-flex justify-content-between">
 								{error && <span>{error}</span>}
 							</div>
@@ -349,9 +454,9 @@ export default function Home() {
 								className="mt-4"
 								onSubmit={(e) => {
 								e.preventDefault()
-								const server = e.target.elements.server.value
+								const serverName = e.target.elements.server.value
 								const description = e.target.elements.description.value
-								handleCreateServer(server, description)
+								handleCreateServer(serverName, description)
 								}}
 							>
 								<div className="d-grid mt-4">
